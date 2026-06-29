@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+ postgres:
+  image: postgres:16
+  container_name: postgres
+  restart: unless-stopped
+  networks:
+   - backend
+  volumes:
+   - postgres_data:/var/lib/postgresql/data
+  ports:
+   - "5432:5432"
+  env_file:
+   - ./.env
+
+ elasticsearch:
+  image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+  container_name: elasticsearch
+  restart: unless-stopped
+  networks:
+   - backend
+  volumes:
+   - elastic_data:/usr/share/elasticsearch/data
+  ports:
+    - "9200:9200" 
+  environment:
+    - discovery.type=single-node      
+    - xpack.security.enabled=false     
+    - ES_JAVA_OPTS=-Xms512m -Xmx512m   
+
+
+volumes:
+ postgres_data:
+ elastic_data:
+
+networks:
+ backend:
