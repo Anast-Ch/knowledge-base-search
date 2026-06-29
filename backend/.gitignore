@@ -1,0 +1,38 @@
+# Файлы окружения
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Логи
+*.log
+
+# Сборки
+dist/
+build/
+*.egg-info/
+
+# Docker
+*.pid
+
+# Базы данных
+*.db
+*.sqlite
