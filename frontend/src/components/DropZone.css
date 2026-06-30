@@ -1,0 +1,67 @@
+.drop-zone {
+  width: 100%;
+  max-width: 700px;
+  background-color: var(--bg-card, #F5F0EA);
+  border: 2px dashed var(--accent-red, #B22222);
+  padding: 48px 32px;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.drop-zone:hover,
+.drop-zone.dragging {
+  background-color: var(--bg-white, #FFFFFF);
+  border-color: var(--text-primary, #1A1513);
+}
+
+.drop-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.drop-icon {
+  font-size: 48px;
+  color: var(--accent-red, #B22222);
+  stroke-width: 1.5;
+}
+
+.drop-text {
+  font-size: 18px;
+  color: var(--text-primary, #1A1513);
+  font-weight: 500;
+}
+
+.drop-or {
+  font-size: 14px;
+  color: var(--text-secondary, #5C4E44);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 4px 0;
+}
+
+.drop-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  padding: 12px 40px;
+}
+
+.drop-hint {
+  font-size: 13px;
+  color: var(--text-secondary, #5C4E44);
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .drop-zone {
+    padding: 32px 20px;
+  }
+  
+  .drop-text {
+    font-size: 16px;
+  }
+}

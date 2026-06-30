@@ -1,0 +1,189 @@
+.documents-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.documents-page .container {
+  flex: 1;
+  padding: 40px 24px 60px;
+}
+
+.page-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary, #1A1513);
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+/* Поиск */
+.search-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 40px;
+  max-width: 700px;
+}
+
+.search-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-secondary, #5C4E44);
+  stroke-width: 2;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  font-family: var(--font-body, 'IBM Plex Mono', monospace);
+  font-size: 16px;
+  color: var(--text-primary, #1A1513);
+  background-color: var(--bg-white, #FFFFFF);
+  border: 2px solid var(--border, #D1C5B8);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: var(--accent-red, #B22222);
+}
+
+.search-btn {
+  font-size: 16px;
+  padding: 12px 32px;
+  white-space: nowrap;
+}
+
+/* Результаты */
+.results-section {
+  margin-bottom: 40px;
+}
+
+.results-info {
+  font-size: 14px;
+  color: var(--text-secondary, #5C4E44);
+  margin-bottom: 16px;
+}
+
+.loading-text {
+  color: var(--text-secondary, #5C4E44);
+  font-size: 16px;
+}
+
+.no-results {
+  color: var(--text-secondary, #5C4E44);
+  font-size: 16px;
+  padding: 40px 0;
+}
+
+/* Карточки результатов */
+.card-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary, #1A1513);
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+
+.card-meta {
+  font-size: 13px;
+  color: var(--text-secondary, #5C4E44);
+  margin: 0 0 10px 0;
+}
+
+.card-text {
+  font-size: 15px;
+  color: var(--text-primary, #1A1513);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.highlight {
+  background-color: var(--highlight, #E8D44D);
+  padding: 2px 0;
+}
+
+/* Список документов */
+.documents-list {
+  margin-top: 40px;
+}
+
+.documents-list-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary, #1A1513);
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+}
+
+.doc-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background-color: var(--bg-white, #FFFFFF);
+  margin-bottom: 6px;
+  box-shadow: 2px 2px 0px rgba(26, 21, 19, 0.04);
+}
+
+.doc-name {
+  font-size: 15px;
+  color: var(--text-primary, #1A1513);
+  font-weight: 500;
+}
+
+.doc-date {
+  font-size: 14px;
+  color: var(--text-secondary, #5C4E44);
+}
+
+.doc-status {
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 2px;
+}
+
+.doc-status.ready {
+  color: var(--status-ready, #5C7A5E);
+  background-color: rgba(92, 122, 94, 0.1);
+}
+
+.doc-status.error {
+  color: var(--status-error, #8B1A1A);
+  background-color: rgba(139, 26, 26, 0.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 24px;
+  }
+  
+  .search-form {
+    flex-direction: column;
+  }
+  
+  .search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .doc-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .doc-date {
+    font-size: 13px;
+  }
+}
