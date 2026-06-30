@@ -19,3 +19,4 @@ pytest-asyncio==0.24.0
 pytest-cov==5.0.0
 factory-boy==3.3.1
 aiosqlite==0.20.0
+psycopg[binary]
