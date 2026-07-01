@@ -5,7 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
-from app.api.endpoints import documents
+from app.core.elasticsearch import es_client
+from app.api.endpoints import documents, search
 
 logging.basicConfig(
     level=logging.INFO if not settings.DEBUG else logging.DEBUG,
@@ -20,6 +21,7 @@ async def lifespan(app: FastAPI):
     yield
     logger.info("Shutting down...")
     await close_db()
+    await es_client.close()
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -42,6 +44,12 @@ app.include_router(
     documents.router,
     prefix=settings.API_PREFIX,
     tags=["documents"]
+)
+
+app.include_router(
+    search.router,
+    prefix=settings.API_PREFIX,
+    tags=["search"]
 )
 
 @app.get("/")
