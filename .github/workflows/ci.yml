@@ -31,7 +31,10 @@ jobs:
       - name: Run linter Ruff
         run: ruff check .
 
-      - name: Run Pytest Tests  
+      - name: Run Pytest Tests
+        env:
+          SECRET_KEY: "super_secret_dummy_key_for_github_actions_12345"  
         run: pytest tests/ -v
+
 
 
