@@ -1,0 +1,153 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 24px 40px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.hero-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--text-primary, #1A1513);
+  line-height: 1.1;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.hero-accent {
+  color: var(--accent-red, #B22222);
+  font-size: 72px;
+}
+
+.hero-btn {
+  font-size: 20px;
+  padding: 16px 56px;
+}
+
+/* Возможности */
+.features {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 60px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.feature-card {
+  background-color: var(--bg-white, #FFFFFF);
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 3px 3px 0px rgba(26, 21, 19, 0.06);
+  border-top: 4px solid var(--accent-red, #B22222);
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+.feature-icon {
+  font-size: 36px;
+  color: var(--accent-red, #B22222);
+  display: block;
+  margin: 0 auto 16px;
+  stroke-width: 1.5;
+}
+
+.feature-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #1A1513);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  color: var(--text-secondary, #5C4E44);
+  line-height: 1.6;
+}
+
+.open-source {
+  text-align: center;
+  padding: 24px 0 16px;
+  border-top: 2px solid var(--border, #D1C5B8);
+  width: 100%;
+  max-width: 700px;
+}
+
+.open-source-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-secondary, #5C4E44);
+  margin-bottom: 6px;
+}
+
+.github-icon {
+  color: var(--text-primary, #1A1513);
+}
+
+.open-source-link {
+  font-family: var(--font-body, 'IBM Plex Mono', monospace);
+  font-size: 15px;
+  color: var(--accent-red, #B22222);
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.open-source-link:hover {
+  color: var(--text-primary, #1A1513);
+  text-decoration: underline;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-accent {
+    font-size: 40px;
+  }
+  
+  .hero-btn {
+    font-size: 16px;
+    padding: 14px 40px;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .feature-card {
+    padding: 24px 16px;
+  }
+}
