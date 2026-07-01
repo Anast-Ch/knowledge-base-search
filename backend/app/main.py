@@ -2,10 +2,15 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
 
 from app.core.config import settings
 from app.core.database import init_db, close_db
 from app.core.elasticsearch import es_client
+from app.core.exceptions import (
+    validation_exception_handler,
+    generic_exception_handler
+)
 from app.api.endpoints import documents, search
 
 logging.basicConfig(
@@ -39,6 +44,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, generic_exception_handler)
 
 app.include_router(
     documents.router,

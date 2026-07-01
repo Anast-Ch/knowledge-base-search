@@ -21,6 +21,9 @@ async def parse_docx(file_bytes: bytes) -> str:
     try:
         doc = Document(io.BytesIO(file_bytes))
         text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
+
+        if not text.strip():
+            raise ValueError("Документ не содержит текста")
         return text
     except Exception as e:
         raise HTTPException(
