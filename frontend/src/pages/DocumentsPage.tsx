@@ -4,30 +4,60 @@ import Navigation from '../components/Navigation';
 import { mockDocuments, mockSearchResults } from '../data/mockData';
 import './DocumentsPage.css';
 
+// Тип для результатов поиска (объединяем поля)
+interface SearchResultItem {
+  id: string;
+  fileName: string;
+  page: number;
+  text: string;
+  score: number;
+}
+
 const DocumentsPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Результаты поиска – храним отдельно
-  const [searchResults, setSearchResults] = useState<typeof mockSearchResults>([]);
+  // Результаты поиска
+  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
 
-  // Выполнить поиск (синхронно)
+  // Выполнить поиск (по имени из mockDocuments и по имени/тексту из mockSearchResults)
   const performSearch = (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
       return;
     }
-    const filtered = mockSearchResults.filter(
+
+    const lowerQuery = searchQuery.toLowerCase();
+
+    // 1. Ищем по mockDocuments (по имени)
+    const docMatches = mockDocuments
+      .filter((doc) => doc.name.toLowerCase().includes(lowerQuery))
+      .map((doc) => ({
+        id: doc.id,
+        fileName: doc.name,
+        page: 0,
+        text: '', // текста нет, но можно оставить пустым
+        score: 0,
+      }));
+
+    // 2. Ищем по mockSearchResults (по имени и тексту)
+    const searchMatches = mockSearchResults.filter(
       (item) =>
-        item.fileName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.text.toLowerCase().includes(searchQuery.toLowerCase())
+        item.fileName.toLowerCase().includes(lowerQuery) ||
+        item.text.toLowerCase().includes(lowerQuery)
     );
-    setSearchResults(filtered);
+
+    // 3. Объединяем, убираем дубликаты по fileName (если документ найден и там, и там)
+    const combined = [...docMatches, ...searchMatches];
+    const unique = combined.filter(
+      (item, index, self) => self.findIndex((i) => i.fileName === item.fileName) === index
+    );
+
+    setSearchResults(unique);
   };
 
-  // Обработчик отправки формы
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) {
@@ -36,7 +66,6 @@ const DocumentsPage: React.FC = () => {
       return;
     }
     setIsSearching(true);
-    // Имитация задержки (можно убрать, но оставим для эффекта)
     setTimeout(() => {
       performSearch(query);
       setIsSearching(false);
@@ -44,7 +73,6 @@ const DocumentsPage: React.FC = () => {
     }, 300);
   };
 
-  // Подсветка совпадений
   const highlightText = (text: string, search: string) => {
     if (!search.trim()) return text;
     const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -58,25 +86,19 @@ const DocumentsPage: React.FC = () => {
     );
   };
 
-  // ---- ПАГИНАЦИЯ ----
-  // Для списка документов (без поиска)
+  // ---- Пагинация ----
   const totalDocPages = Math.ceil(mockDocuments.length / itemsPerPage);
   const startDoc = (currentPage - 1) * itemsPerPage;
   const paginatedDocs = mockDocuments.slice(startDoc, startDoc + itemsPerPage);
 
-  // Для результатов поиска
   const totalSearchPages = Math.ceil(searchResults.length / itemsPerPage);
   const startSearch = (currentPage - 1) * itemsPerPage;
   const paginatedSearch = searchResults.slice(startSearch, startSearch + itemsPerPage);
 
-  // Общее количество страниц (зависит от режима)
   const totalPages = query ? totalSearchPages : totalDocPages;
-
-  // Флаг: есть ли результаты поиска
   const hasSearchResults = searchResults.length > 0;
   const showNoResults = query && !isSearching && !hasSearchResults;
 
-  // Переключение страницы
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
@@ -118,7 +140,6 @@ const DocumentsPage: React.FC = () => {
             </div>
           )}
 
-          {/* РЕЗУЛЬТАТЫ ПОИСКА (если есть) */}
           {!isSearching && query && hasSearchResults && (
             <div className="results-section">
               <div className="results-header">
@@ -132,18 +153,23 @@ const DocumentsPage: React.FC = () => {
                     <h3 className="result-file-name">
                       {highlightText(result.fileName, query)}
                     </h3>
-                    <span className="result-score">релевантность {result.score.toFixed(2)}</span>
+                    {result.score > 0 && (
+                      <span className="result-score">релевантность {result.score.toFixed(2)}</span>
+                    )}
                   </div>
-                  <p className="result-meta">
-                    Страница {result.page} • {result.fileName}
-                  </p>
-                  <p className="result-text">{highlightText(result.text, query)}</p>
+                  {result.page > 0 && (
+                    <p className="result-meta">
+                      Страница {result.page} • {result.fileName}
+                    </p>
+                  )}
+                  {result.text && (
+                    <p className="result-text">{highlightText(result.text, query)}</p>
+                  )}
                 </div>
               ))}
             </div>
           )}
 
-          {/* СООБЩЕНИЕ "НИЧЕГО НЕ НАЙДЕНО" */}
           {showNoResults && (
             <div className="no-results">
               <p>✦ По вашему запросу ничего не найдено ✦</p>
@@ -151,7 +177,6 @@ const DocumentsPage: React.FC = () => {
             </div>
           )}
 
-          {/* СПИСОК ВСЕХ ДОКУМЕНТОВ (если нет поиска) */}
           {!query && (
             <div className="documents-list">
               <div className="documents-grid">
@@ -176,7 +201,6 @@ const DocumentsPage: React.FC = () => {
             </div>
           )}
 
-          {/* ПАГИНАЦИЯ (если нужно) */}
           {!isSearching && (
             (query && searchResults.length > itemsPerPage) ||
             (!query && mockDocuments.length > itemsPerPage)
