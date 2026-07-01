@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiFile, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import { FiFile, FiCheckCircle, FiXCircle, FiTrash2 } from 'react-icons/fi';
 import './FileList.css';
 
 interface FileItem {
@@ -11,9 +11,10 @@ interface FileItem {
 
 interface FileListProps {
   files: FileItem[];
+  onRemoveFile: (id: number) => void;
 }
 
-const FileList: React.FC<FileListProps> = ({ files }) => {
+const FileList: React.FC<FileListProps> = ({ files, onRemoveFile }) => {
   const getStatusIcon = (status: FileItem['status']) => {
     switch (status) {
       case 'ready': return <FiCheckCircle className="status-icon ready" />;
@@ -56,13 +57,25 @@ const FileList: React.FC<FileListProps> = ({ files }) => {
               <FiFile className="file-icon" />
               <span className="file-name">{file.name}</span>
             </div>
-            <span
-              className="file-status"
-              style={{ color: getStatusColor(file.status) }}
-            >
-              {getStatusIcon(file.status)}
-              {getStatusText(file.status)}
-            </span>
+            <div className="file-right">
+              <span
+                className="file-status"
+                style={{ color: getStatusColor(file.status) }}
+              >
+                {getStatusIcon(file.status)}
+                {getStatusText(file.status)}
+              </span>
+              {/* Крестик удаления — только для готовых или ошибочных файлов */}
+              {(file.status === 'ready' || file.status === 'error') && (
+                <button
+                  className="remove-btn"
+                  onClick={() => onRemoveFile(file.id)}
+                  title="Удалить файл"
+                >
+                  <FiTrash2 />
+                </button>
+              )}
+            </div>
           </div>
           {(file.status === 'loading' || file.status === 'indexing') && (
             <div className="progress-bar">

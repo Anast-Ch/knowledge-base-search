@@ -16,7 +16,7 @@ const Navigation: React.FC = () => {
           <li>
             <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
               <FiSearch size={18} />
-              Найти
+              Главная страница
             </Link>
           </li>
           <li>

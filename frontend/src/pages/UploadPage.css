@@ -4,29 +4,66 @@
   flex-direction: column;
 }
 
-.upload-inner {
+/* ОСНОВНОЙ КОНТЕЙНЕР */
+.upload-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 24px 60px;
+  padding: 80px 24px 60px; 
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
 }
 
+/* ЗАГОЛОВОК */
 .upload-title {
   font-family: var(--font-heading, 'Oswald', sans-serif);
   font-size: 32px;
   font-weight: 700;
   color: var(--text-primary, #1A1513);
-  margin-bottom: 36px;
+  margin-top: 20px;
+  margin-bottom: 40px;
   letter-spacing: 1px;
+  text-align: center;
+}
+
+/* DROP ZONE */
+.dropzone-wrapper {
+  width: 100%;
+  max-width: 700px;
+}
+
+/* КНОПКА "ГОТОВО" */
+.ready-wrapper {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
 }
 
 .ready-btn {
-  margin-top: 32px;
+  min-width: 200px;
 }
 
 @media (max-width: 768px) {
+  .upload-container {
+    padding: 80px 16px 40px; 
+  }
+  
   .upload-title {
     font-size: 24px;
+    margin-bottom: 28px;
+  }
+  
+  .ready-wrapper {
+    margin-top: 28px;
+    margin-bottom: 28px;
+  }
+  
+  .ready-btn {
+    width: 100%;
+    min-width: unset;
   }
 }

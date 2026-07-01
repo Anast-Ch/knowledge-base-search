@@ -5,7 +5,6 @@ import DropZone from '../components/DropZone';
 import FileList from '../components/FileList';
 import './UploadPage.css';
 
-// Тип для файла
 interface UploadFile {
   id: number;
   name: string;
@@ -45,21 +44,37 @@ const UploadPage: React.FC = () => {
     });
   };
 
+  const handleRemoveFile = (id: number) => {
+    setFiles(prev => prev.filter(f => f.id !== id));
+  };
+
   return (
     <>
       <Navigation />
       <main className="upload-page">
-        <div className="container upload-inner">
+        <div className="container upload-container">
+          {/* ЗАГОЛОВОК — с отступом сверху */}
           <h1 className="upload-title">ЗАГРУЗКА ДОКУМЕНТОВ</h1>
-          <DropZone onFilesAdded={handleFilesAdded} />
-          <FileList files={files} />
-          <button
-            className="btn-secondary ready-btn"
-            onClick={() => navigate('/documents')}
-          >
-            ГОТОВО
-          </button>
+          
+          {/* DROP ZONE — фиксированного размера */}
+          <div className="dropzone-wrapper">
+            <DropZone onFilesAdded={handleFilesAdded} />
+          </div>
+          
+          {/* СПИСОК ФАЙЛОВ */}
+          <FileList files={files} onRemoveFile={handleRemoveFile} />
+          
+          {/* КНОПКА "ГОТОВО" — центрирована */}
+          <div className="ready-wrapper">
+            <button
+              className="btn-secondary ready-btn"
+              onClick={() => navigate('/documents')}
+            >
+              ГОТОВО
+            </button>
+          </div>
         </div>
+        
         <footer className="footer">
           <div className="container">
             <p>© 2026 Университетская поисковая система.</p>

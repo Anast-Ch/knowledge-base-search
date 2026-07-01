@@ -6,24 +6,47 @@
 
 .documents-page .container {
   flex: 1;
-  padding: 40px 24px 60px;
+  padding: 30px 24px 40px;
+}
+
+/* ЗАГОЛОВОК */
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .page-title {
-  font-family: var(--font-heading, 'Oswald', sans-serif);
-  font-size: 32px;
+  font-family: var(--font-heading, 'Anton', sans-serif);
+  font-size: 56px;
   font-weight: 700;
-  color: var(--text-primary, #1A1513);
-  margin-bottom: 32px;
-  letter-spacing: 1px;
+  color: var(--text-primary, #1A1A1A);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
 }
 
-/* Поиск */
+.title-star-left,
+.title-star-right {
+  font-size: 32px;
+  color: var(--accent-gold, #F5C842);
+}
+
+.page-subtitle {
+  font-family: var(--font-body, 'Courier New', monospace);
+  font-size: 16px;
+  color: var(--text-secondary, #4A3A2A);
+  margin-top: 8px;
+  letter-spacing: 2px;
+}
+
+/* ПОИСК */
 .search-form {
   display: flex;
   gap: 12px;
-  margin-bottom: 40px;
   max-width: 700px;
+  margin: 0 auto 40px;
 }
 
 .search-wrapper {
@@ -36,154 +59,286 @@
 .search-icon {
   position: absolute;
   left: 14px;
-  color: var(--text-secondary, #5C4E44);
+  color: var(--text-secondary, #4A3A2A);
   stroke-width: 2;
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 16px 12px 44px;
-  font-family: var(--font-body, 'IBM Plex Mono', monospace);
+  padding: 14px 16px 14px 48px;
+  font-family: var(--font-body, 'Courier New', monospace);
   font-size: 16px;
-  color: var(--text-primary, #1A1513);
+  color: var(--text-primary, #1A1A1A);
   background-color: var(--bg-white, #FFFFFF);
-  border: 2px solid var(--border, #D1C5B8);
+  border: 3px solid var(--text-primary, #1A1A1A);
   outline: none;
   transition: border-color 0.2s ease;
 }
 
 .search-input:focus {
-  border-color: var(--accent-red, #B22222);
+  border-color: var(--accent-red, #D4320F);
 }
 
 .search-btn {
-  font-size: 16px;
-  padding: 12px 32px;
+  font-size: 18px;
+  padding: 14px 32px;
   white-space: nowrap;
 }
 
-/* Результаты */
-.results-section {
-  margin-bottom: 40px;
-}
-
-.results-info {
-  font-size: 14px;
-  color: var(--text-secondary, #5C4E44);
-  margin-bottom: 16px;
-}
-
-.loading-text {
-  color: var(--text-secondary, #5C4E44);
-  font-size: 16px;
-}
-
-.no-results {
-  color: var(--text-secondary, #5C4E44);
-  font-size: 16px;
-  padding: 40px 0;
-}
-
-/* Карточки результатов */
-.card-title {
-  font-family: var(--font-heading, 'Oswald', sans-serif);
+/* ИНДИКАТОР ЗАГРУЗКИ */
+.loading-indicator {
+  text-align: center;
+  font-family: var(--font-body, 'Courier New', monospace);
   font-size: 18px;
+  color: var(--text-secondary, #4A3A2A);
+  padding: 40px 0;
+  letter-spacing: 2px;
+}
+
+.loading-indicator span {
+  color: var(--accent-gold, #F5C842);
+  margin: 0 8px;
+}
+
+/* РЕЗУЛЬТАТЫ ПОИСКА */
+.results-section {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  font-family: var(--font-body, 'Courier New', monospace);
+  font-size: 14px;
+  color: var(--text-secondary, #4A3A2A);
+  border-bottom: 2px dashed var(--accent-gold, #F5C842);
+  padding-bottom: 8px;
+}
+
+.results-count {
   font-weight: 700;
-  color: var(--text-primary, #1A1513);
-  margin: 0 0 4px 0;
-  text-transform: uppercase;
+  color: var(--text-primary, #1A1A1A);
 }
 
-.card-meta {
+.result-card {
+  background-color: var(--bg-white, #FFFFFF);
+  border: 3px solid var(--text-primary, #1A1A1A);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 6px 6px 0px rgba(212, 50, 15, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-4px);
+}
+
+.result-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.result-file-icon {
+  color: var(--accent-red, #D4320F);
+  font-size: 20px;
+}
+
+.result-file-name {
+  font-family: var(--font-heading, 'Anton', sans-serif);
+  font-size: 20px;
+  color: var(--text-primary, #1A1A1A);
+  letter-spacing: 1px;
+}
+
+.result-score {
+  font-family: var(--font-body, 'Courier New', monospace);
+  font-size: 12px;
+  color: var(--text-secondary, #4A3A2A);
+  background: var(--bg-primary, #E8DDD0);
+  padding: 2px 10px;
+  border: 1px solid var(--border, #C4B8AA);
+  margin-left: auto;
+}
+
+.result-meta {
+  font-family: var(--font-body, 'Courier New', monospace);
   font-size: 13px;
-  color: var(--text-secondary, #5C4E44);
-  margin: 0 0 10px 0;
+  color: var(--text-secondary, #4A3A2A);
+  margin-bottom: 10px;
 }
 
-.card-text {
+.result-text {
+  font-family: var(--font-body, 'Courier New', monospace);
   font-size: 15px;
-  color: var(--text-primary, #1A1513);
+  color: var(--text-primary, #1A1A1A);
   line-height: 1.6;
-  margin: 0;
 }
 
 .highlight {
-  background-color: var(--highlight, #E8D44D);
-  padding: 2px 0;
+  background-color: var(--highlight, #F5DE6A);
+  padding: 0 2px;
+  font-weight: 700;
 }
 
-/* Список документов */
+/* НИЧЕГО НЕ НАЙДЕНО */
+.no-results {
+  text-align: center;
+  padding: 60px 0;
+  font-family: var(--font-body, 'Courier New', monospace);
+  font-size: 20px;
+  color: var(--text-secondary, #4A3A2A);
+}
+
+.no-results p:first-child {
+  font-size: 24px;
+  color: var(--text-primary, #1A1A1A);
+  margin-bottom: 8px;
+}
+
+.no-results-hint {
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+/* СПИСОК ВСЕХ ДОКУМЕНТОВ */
 .documents-list {
-  margin-top: 40px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .documents-list-title {
-  font-family: var(--font-heading, 'Oswald', sans-serif);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-primary, #1A1513);
-  margin-bottom: 16px;
-  letter-spacing: 0.5px;
+  font-family: var(--font-heading, 'Anton', sans-serif);
+  font-size: 28px;
+  color: var(--text-primary, #1A1A1A);
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+  text-align: center;
+  border-bottom: 4px solid var(--accent-red, #D4320F);
+  display: inline-block;
+  padding-bottom: 6px;
+}
+
+.documents-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 .doc-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
+  gap: 16px;
   background-color: var(--bg-white, #FFFFFF);
-  margin-bottom: 6px;
-  box-shadow: 2px 2px 0px rgba(26, 21, 19, 0.04);
+  padding: 14px 20px;
+  border: 2px solid var(--text-primary, #1A1A1A);
+  box-shadow: 4px 4px 0px rgba(212, 50, 15, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.doc-item:hover {
+  transform: translateX(4px);
+}
+
+.doc-icon-wrapper {
+  background-color: var(--bg-primary, #E8DDD0);
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.doc-icon {
+  color: var(--accent-red, #D4320F);
+  font-size: 24px;
+}
+
+.doc-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .doc-name {
-  font-size: 15px;
-  color: var(--text-primary, #1A1513);
+  font-family: var(--font-body, 'Courier New', monospace);
+  font-size: 16px;
   font-weight: 500;
+  color: var(--text-primary, #1A1A1A);
 }
 
 .doc-date {
-  font-size: 14px;
-  color: var(--text-secondary, #5C4E44);
+  font-size: 13px;
+  color: var(--text-secondary, #4A3A2A);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.doc-date-icon {
+  stroke-width: 2;
 }
 
 .doc-status {
+  font-family: var(--font-heading, 'Anton', sans-serif);
   font-size: 14px;
   padding: 4px 12px;
-  border-radius: 2px;
+  border: 2px solid var(--text-primary, #1A1A1A);
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .doc-status.ready {
-  color: var(--status-ready, #5C7A5E);
-  background-color: rgba(92, 122, 94, 0.1);
+  color: var(--status-ready, #2D4A3B);
+  border-color: var(--status-ready, #2D4A3B);
 }
 
 .doc-status.error {
-  color: var(--status-error, #8B1A1A);
-  background-color: rgba(139, 26, 26, 0.1);
+  color: var(--status-error, #A8325C);
+  border-color: var(--status-error, #A8325C);
 }
 
-/* Адаптивность */
+/* АДАПТИВНОСТЬ */
+@media (max-width: 1024px) {
+  .documents-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .page-title {
+    font-size: 36px;
+    gap: 12px;
+  }
+  .title-star-left,
+  .title-star-right {
     font-size: 24px;
   }
-  
   .search-form {
     flex-direction: column;
   }
-  
   .search-btn {
     width: 100%;
     justify-content: center;
   }
-  
+  .result-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .result-score {
+    margin-left: 0;
+  }
   .doc-item {
     flex-wrap: wrap;
-    gap: 8px;
   }
-  
-  .doc-date {
-    font-size: 13px;
+  .doc-status {
+    margin-left: auto;
   }
 }
+
