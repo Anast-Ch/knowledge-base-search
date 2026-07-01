@@ -5,7 +5,7 @@ from fastapi import HTTPException, UploadFile
 
 from app.utils.validators import validate_file
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "../fixtures"
 
 
 def load_file(filename: str) -> UploadFile:
