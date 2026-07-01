@@ -1,6 +1,4 @@
-import os
-import secrets
-from typing import Optional, List
+from typing import List
 from pydantic_settings import BaseSettings
 from pydantic import Field, validator
 from dotenv import load_dotenv
