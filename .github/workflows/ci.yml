@@ -35,6 +35,27 @@ jobs:
         env:
           SECRET_KEY: "super_secret_dummy_key_for_github_actions_12345"  
         run: pytest tests/ -v
+  
+  test-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
 
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm ci 
+
+      - name: Run ESlint 
+        run: npx eslint .
 
 
