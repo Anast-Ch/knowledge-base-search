@@ -1,0 +1,57 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+}
+
+.app__header {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 2px solid var(--bg-card);
+}
+
+.app__header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+.app__header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.app__main {
+  flex: 1;
+  padding: 40px 20px;
+}
+
+.app__footer {
+  text-align: center;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-top: 2px solid var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .app__header h1 {
+    font-size: 2rem;
+  }
+
+  .app__header p {
+    font-size: 1rem;
+  }
+
+  .app__main {
+    padding: 20px 10px;
+  }
+}

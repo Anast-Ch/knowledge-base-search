@@ -1,0 +1,62 @@
+services:
+ postgres:
+  image: postgres:16
+  container_name: postgres
+  platform: linux/amd64
+  restart: unless-stopped
+  networks:
+   - backend
+  volumes:
+   - postgres_data:/var/lib/postgresql/data
+  ports:
+   - "5432:5432"
+  env_file:
+   - ./.env
+  healthcheck:   
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+ elasticsearch:
+  image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+  container_name: elasticsearch
+  platform: linux/amd64
+  restart: unless-stopped
+  networks:
+   - backend
+  volumes:
+   - elastic_data:/usr/share/elasticsearch/data
+  ports:
+    - "9200:9200" 
+  environment:
+    - discovery.type=single-node      
+    - xpack.security.enabled=false     
+    - ES_JAVA_OPTS=-Xms512m -Xmx512m   
+  
+ app:
+  build: ./backend
+  container_name: app
+  platform: linux/amd64
+  networks:
+   - frontend
+   - backend
+  volumes:
+   - ./backend:/app 
+  ports:
+   - "8000:8000"
+  env_file:
+   - ./.env
+  depends_on:
+    postgres:
+      condition: service_healthy
+    elasticsearch:
+      condition: service_started
+
+volumes:
+ postgres_data:
+ elastic_data:
+
+networks:
+ frontend:
+ backend:

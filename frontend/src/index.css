@@ -1,0 +1,123 @@
+:root {
+  --bg-primary: #ECE4D9;
+  --bg-card: #F5F0EA;
+  --bg-white: #FFFFFF;
+  
+  --text-primary: #1A1513;
+  --text-secondary: #5C4E44;
+  
+  --accent-red: #B22222;
+  --accent-gold: #D4A050;
+  
+  --border: #D1C5B8;
+  
+  --status-loading: #D4A050;
+  --status-indexing: #B22222;
+  --status-ready: #5C7A5E;
+  --status-error: #8B1A1A;
+  
+  --highlight: #E8D44D;
+  
+  --font-heading: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-body: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.btn-primary {
+  background-color: var(--accent-red);
+  color: var(--bg-white);
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 14px 48px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background-color: var(--text-primary);
+  transform: scale(1.02);
+}
+
+.btn-secondary {
+  background-color: var(--text-primary);
+  color: var(--bg-white);
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 14px 40px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent-red);
+  transform: scale(1.02);
+}
+
+.card {
+  background-color: var(--bg-card);
+  border-left: 8px solid var(--accent-red);
+  padding: 20px 24px;
+  margin-bottom: 12px;
+  box-shadow: 3px 3px 0px rgba(26, 21, 19, 0.08);
+}
+
+.footer {
+  background-color: var(--bg-white);
+  padding: 24px 0;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.footer p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.footer-sub {
+  font-size: 12px !important;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .btn-primary {
+    font-size: 15px;
+    padding: 12px 32px;
+  }
+  
+  .btn-secondary {
+    font-size: 14px;
+    padding: 12px 28px;
+  }
+}

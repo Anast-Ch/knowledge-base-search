@@ -1,0 +1,72 @@
+.nav {
+  background-color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.nav-logo {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #1A1513);
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.logo-accent {
+  color: var(--accent-red, #B22222);
+  font-size: 26px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body, 'IBM Plex Mono', monospace);
+  font-size: 15px;
+  color: var(--text-secondary, #5C4E44);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-links a:hover {
+  color: var(--text-primary, #1A1513);
+}
+
+.nav-links a.active {
+  color: var(--text-primary, #1A1513);
+  border-bottom-color: var(--accent-red, #B22222);
+}
+
+@media (max-width: 768px) {
+  .nav-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .nav-links {
+    gap: 20px;
+  }
+  
+  .nav-links a {
+    font-size: 13px;
+  }
+}
