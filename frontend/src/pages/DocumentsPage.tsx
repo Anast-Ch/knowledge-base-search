@@ -1,76 +1,94 @@
-import React, { useState } from 'react';
-import { FiSearch, FiFileText, FiClock } from 'react-icons/fi';
+import React, { useState, useRef, useEffect } from 'react';
+import { FiSearch, FiFileText, FiClock, FiX, FiTrash2 } from 'react-icons/fi';
 import Navigation from '../components/Navigation';
 import { mockDocuments, mockSearchResults } from '../data/mockData';
 import './DocumentsPage.css';
-
-// Тип для результатов поиска (объединяем поля)
-interface SearchResultItem {
-  id: string;
-  fileName: string;
-  page: number;
-  text: string;
-  score: number;
-}
 
 const DocumentsPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showHistory, setShowHistory] = useState(false);
   const itemsPerPage = 5;
 
-  // Результаты поиска
-  const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
+  const [searchResults, setSearchResults] = useState<typeof mockSearchResults>([]);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const historyRef = useRef<HTMLDivElement>(null);
 
-  // Выполнить поиск (по имени из mockDocuments и по имени/тексту из mockSearchResults)
+  // Закрывать историю при клике вне
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        historyRef.current && 
+        !historyRef.current.contains(event.target as Node) &&
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target as Node)
+      ) {
+        setShowHistory(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const performSearch = (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
       return;
     }
-
-    const lowerQuery = searchQuery.toLowerCase();
-
-    // 1. Ищем по mockDocuments (по имени)
-    const docMatches = mockDocuments
-      .filter((doc) => doc.name.toLowerCase().includes(lowerQuery))
-      .map((doc) => ({
-        id: doc.id,
-        fileName: doc.name,
-        page: 0,
-        text: '', // текста нет, но можно оставить пустым
-        score: 0,
-      }));
-
-    // 2. Ищем по mockSearchResults (по имени и тексту)
-    const searchMatches = mockSearchResults.filter(
+    const filtered = mockSearchResults.filter(
       (item) =>
-        item.fileName.toLowerCase().includes(lowerQuery) ||
-        item.text.toLowerCase().includes(lowerQuery)
+        item.fileName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.text.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    // 3. Объединяем, убираем дубликаты по fileName (если документ найден и там, и там)
-    const combined = [...docMatches, ...searchMatches];
-    const unique = combined.filter(
-      (item, index, self) => self.findIndex((i) => i.fileName === item.fileName) === index
-    );
-
-    setSearchResults(unique);
+    setSearchResults(filtered);
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) {
-      setSearchResults([]);
-      setCurrentPage(1);
-      return;
-    }
+    if (!query.trim()) return;
+    
+    addToHistory(query);
+    setShowHistory(false);
+    
     setIsSearching(true);
     setTimeout(() => {
       performSearch(query);
       setIsSearching(false);
       setCurrentPage(1);
     }, 300);
+  };
+
+  const addToHistory = (searchQuery: string) => {
+    setSearchHistory((prev) => {
+      const newHistory = [searchQuery, ...prev.filter((item) => item !== searchQuery)];
+      return newHistory.slice(0, 10);
+    });
+  };
+
+  const handleHistoryClick = (historyQuery: string) => {
+    setQuery(historyQuery);
+    addToHistory(historyQuery);
+    setShowHistory(false);
+    
+    setIsSearching(true);
+    setTimeout(() => {
+      performSearch(historyQuery);
+      setIsSearching(false);
+      setCurrentPage(1);
+    }, 300);
+  };
+
+  const clearHistory = () => {
+    setSearchHistory([]);
+  };
+
+  const removeHistoryItem = (e: React.MouseEvent, historyQuery: string) => {
+    e.stopPropagation();
+    setSearchHistory((prev) => prev.filter((item) => item !== historyQuery));
   };
 
   const highlightText = (text: string, search: string) => {
@@ -86,7 +104,7 @@ const DocumentsPage: React.FC = () => {
     );
   };
 
-  // ---- Пагинация ----
+  // ---- ПАГИНАЦИЯ ----
   const totalDocPages = Math.ceil(mockDocuments.length / itemsPerPage);
   const startDoc = (currentPage - 1) * itemsPerPage;
   const paginatedDocs = mockDocuments.slice(startDoc, startDoc + itemsPerPage);
@@ -118,21 +136,85 @@ const DocumentsPage: React.FC = () => {
             <p className="page-subtitle">библиотека загруженных файлов</p>
           </div>
 
-          <form className="search-form" onSubmit={handleSearch}>
-            <div className="search-wrapper">
-              <FiSearch className="search-icon" />
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Введите поисковой запрос"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-            <button type="submit" className="btn-primary search-btn" disabled={isSearching}>
-              {isSearching ? 'ПОИСК...' : 'НАЙТИ'}
-            </button>
-          </form>
+          {/* ПОИСК С ВЫПАДАЮЩЕЙ ИСТОРИЕЙ */}
+          <div className="search-container-wrapper" ref={historyRef}>
+            <form className="search-form" onSubmit={handleSearch}>
+              <div className="search-wrapper">
+                <FiSearch className="search-icon" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  className="search-input"
+                  placeholder="Введите поисковой запрос"
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setShowHistory(true);
+                  }}
+                  onFocus={() => setShowHistory(true)}
+                />
+                {query && (
+                  <button
+                    type="button"
+                    className="search-clear-btn"
+                    onClick={() => {
+                      setQuery('');
+                      searchInputRef.current?.focus();
+                    }}
+                  >
+                    <FiX />
+                  </button>
+                )}
+              </div>
+              <button type="submit" className="btn-primary search-btn" disabled={isSearching}>
+                {isSearching ? 'ПОИСК...' : 'НАЙТИ'}
+              </button>
+            </form>
+
+            {/* ВЫПАДАЮЩАЯ ИСТОРИЯ ПОИСКА */}
+            {showHistory && searchHistory.length > 0 && (
+              <div className="search-history-dropdown">
+                <div className="history-dropdown-header">
+                  <div className="history-dropdown-title">
+                    <FiClock />
+                    <span>История поиска</span>
+                  </div>
+                  <button className="history-dropdown-clear" onClick={clearHistory}>
+                    <FiTrash2 /> Очистить
+                  </button>
+                </div>
+                <ul className="history-dropdown-list">
+                  {searchHistory.map((item, index) => (
+                    <li
+                      key={index}
+                      className="history-dropdown-item"
+                      onClick={() => handleHistoryClick(item)}
+                    >
+                      <FiClock className="history-dropdown-icon" />
+                      <span className="history-dropdown-text">{item}</span>
+                      <button
+                        className="history-dropdown-remove"
+                        onClick={(e) => removeHistoryItem(e, item)}
+                      >
+                        <FiX />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Подсказка когда история пуста */}
+            {showHistory && searchHistory.length === 0 && (
+              <div className="search-history-dropdown empty">
+                <div className="history-empty-state">
+                  <FiClock className="empty-state-icon" />
+                  <p>История поиска пуста</p>
+                  <span>Ваши запросы появятся здесь</span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {isSearching && (
             <div className="loading-indicator">
@@ -140,6 +222,7 @@ const DocumentsPage: React.FC = () => {
             </div>
           )}
 
+          {/* РЕЗУЛЬТАТЫ ПОИСКА */}
           {!isSearching && query && hasSearchResults && (
             <div className="results-section">
               <div className="results-header">
@@ -153,18 +236,12 @@ const DocumentsPage: React.FC = () => {
                     <h3 className="result-file-name">
                       {highlightText(result.fileName, query)}
                     </h3>
-                    {result.score > 0 && (
-                      <span className="result-score">релевантность {result.score.toFixed(2)}</span>
-                    )}
+                    <span className="result-score">релевантность {result.score.toFixed(2)}</span>
                   </div>
-                  {result.page > 0 && (
-                    <p className="result-meta">
-                      Страница {result.page} • {result.fileName}
-                    </p>
-                  )}
-                  {result.text && (
-                    <p className="result-text">{highlightText(result.text, query)}</p>
-                  )}
+                  <p className="result-meta">
+                    Страница {result.page} • {result.fileName}
+                  </p>
+                  <p className="result-text">{highlightText(result.text, query)}</p>
                 </div>
               ))}
             </div>
@@ -177,6 +254,7 @@ const DocumentsPage: React.FC = () => {
             </div>
           )}
 
+          {/* СПИСОК ВСЕХ ДОКУМЕНТОВ */}
           {!query && (
             <div className="documents-list">
               <div className="documents-grid">
@@ -201,6 +279,7 @@ const DocumentsPage: React.FC = () => {
             </div>
           )}
 
+          {/* ПАГИНАЦИЯ */}
           {!isSearching && (
             (query && searchResults.length > itemsPerPage) ||
             (!query && mockDocuments.length > itemsPerPage)
