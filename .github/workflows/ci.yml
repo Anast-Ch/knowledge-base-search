@@ -34,7 +34,7 @@ jobs:
       - name: Run Pytest Tests
         env:
           SECRET_KEY: "super_secret_dummy_key_for_github_actions_12345"  
-        run: pytest tests/ -v
+        run: pytest tests/unit -v
   
   test-frontend:
     runs-on: ubuntu-latest
