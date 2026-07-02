@@ -80,4 +80,4 @@ class TestSystemAndDocumentsAPI:
             async with AsyncClient(transport=transport, base_url="http://test") as ac:
                 response = await ac.get("/api/v1/search", params={"q": "тест"})
                 
-                assert response.status_code == 500, f"Ожидался код 500 по контракту системных ошибок, пришел {response.status_code}. Ответ: {response.text}"
+                assert response.status_code == 500, f"Ожидался код 500, пришел {response.status_code}. Ответ: {response.text}"
