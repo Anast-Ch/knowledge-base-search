@@ -1,5 +1,4 @@
 import pytest
-import os
 from io import BytesIO
 from unittest.mock import AsyncMock, patch, MagicMock
 from fastapi import HTTPException

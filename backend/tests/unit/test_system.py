@@ -33,10 +33,9 @@ class TestSystemAndDocumentsAPI:
 
     async def test_get_documents_list_contract(self):
         """Проверка контракта: получение списка загруженных файлов [FE-03]"""
-        
+
         # Создаем mock-объекты документов
         mock_doc_1 = MagicMock()
-        # Привязываем UUID к .id, так как бэкенд забирает данные оттуда
         mock_doc_1.id = "123e4567-e89b-12d3-a456-426614174000"
         mock_doc_1.file_name = "лекция_1.pdf"
         mock_doc_1.upload_date = datetime(2026, 6, 25, 14, 30, 0)
