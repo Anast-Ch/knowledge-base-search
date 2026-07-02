@@ -20,11 +20,8 @@ def test_upload_valid_docx(client):
     data = response.json()
     assert "document_id" in data
     assert data["status"] == "Готово"
-
-    data = response.json()
-
     assert data["file_name"] == "valid.docx"
-    assert data["status"] == "Готово"
+
 
 def test_upload_valid_document(client):
     with open("tests/fixtures/valid.pdf", "rb") as f: 
@@ -47,5 +44,6 @@ def test_get_documents_list(client):
 
 def test_upload_without_file(client):
     response = client.post("/api/v1/documents/upload")
-
-    assert response.status_code == 422
+    
+    assert response.status_code == 400
+    assert "detail" in response.json()
