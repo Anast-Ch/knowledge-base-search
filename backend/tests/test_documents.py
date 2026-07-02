@@ -1,6 +1,3 @@
-from io import BytesIO
-
-
 def test_upload_valid_docx(client):
     with open("tests/fixtures/valid.docx", "rb") as f:
         response = client.post(
