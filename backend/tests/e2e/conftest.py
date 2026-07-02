@@ -21,7 +21,7 @@ def base_url(pytestconfig) -> str:
 
     ЧТОБЫ ПЕРЕОПРЕДЕЛИТЬ!:
 
-        pytest --base-url=http://localhost:3000
+        pytest --base-url=http://localhost:5173
 
     (или через playwright.config).
     """
