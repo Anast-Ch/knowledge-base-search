@@ -33,19 +33,17 @@ class TestSystemAndDocumentsAPI:
 
     async def test_get_documents_list_contract(self):
         """Проверка контракта: получение списка загруженных файлов [FE-03]"""
-        # Создаем mock-объекты документов с полями строго из ТЗ.
-        # Чтобы тест не падал на генерации mock.id, явно закроем это поле, 
-        # но оставим document_id для проверки контракта.
+        
+        # Создаем mock-объекты документов
         mock_doc_1 = MagicMock()
-        del mock_doc_1.id  # Удаляем динамическое поле id, чтобы бэкенд упал, если ищет именно его
-        mock_doc_1.document_id = "123e4567-e89b-12d3-a456-426614174000"
+        # Привязываем UUID к .id, так как бэкенд забирает данные оттуда
+        mock_doc_1.id = "123e4567-e89b-12d3-a456-426614174000"
         mock_doc_1.file_name = "лекция_1.pdf"
         mock_doc_1.upload_date = datetime(2026, 6, 25, 14, 30, 0)
         mock_doc_1.status = "Готово"
 
         mock_doc_2 = MagicMock()
-        del mock_doc_2.id
-        mock_doc_2.document_id = "789e1234-e89b-12d3-a456-426614174999"
+        mock_doc_2.id = "789e1234-e89b-12d3-a456-426614174999"
         mock_doc_2.file_name = "черновик.docx"
         mock_doc_2.upload_date = datetime(2026, 6, 25, 15, 0, 0)
         mock_doc_2.status = "Ошибка"
@@ -61,6 +59,7 @@ class TestSystemAndDocumentsAPI:
             assert response.status_code == 200, f"Ожидался код 200, пришел {response.status_code}. Ответ: {response.text}"
             
             json_data = response.json()
+            print(json_data)
             assert isinstance(json_data, list)
             assert len(json_data) == 2
             
