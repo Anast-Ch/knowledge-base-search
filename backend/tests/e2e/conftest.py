@@ -1,67 +1,28 @@
-from pathlib import Path
-
 import pytest
-from playwright.sync_api import Browser, Page
-
-
-# Корень backend
-BACKEND_DIR = Path(__file__).resolve().parents[2]
-
-# backend/tests
-TESTS_DIR = BACKEND_DIR / "tests"
-
-# backend/tests/fixtures
-FIXTURES_DIR = TESTS_DIR / "fixtures"
-
+import os
+from playwright.sync_api import BrowserType
 
 @pytest.fixture(scope="session")
-def base_url(pytestconfig) -> str:
-    """
-    Адрес фронтенда.
+def browser_context_args(browser_context_args):
+    """Глобальная настройка контекста браузера для E2E сценариев"""
+    return {
+        **browser_context_args,
+        "viewport": {"width": 1280, "height": 720}, # Стандартное разрешение экрана
+        "base_url": "http://localhost:3000"         # ЕСЛИ ЗАПУСКАЕТЕ ЧЕРЕЗ npm dev run, ТО ПОМЕНЯЙТЕ ПОРТ НА 5173, щас просто в докере стоит 3000
+    }
 
-    ЧТОБЫ ПЕРЕОПРЕДЕЛИТЬ!:
-
-        pytest --base-url=http://localhost:5173
-
-    (или через playwright.config).
-    """
-    return pytestconfig.getoption("base_url")
-
-
-@pytest.fixture
-def app_page(browser: Browser, base_url: str) -> Page:
-    """
-    Создает новую вкладку браузера и открывает приложение.
-    """
-    page = browser.new_page()
-    page.goto(base_url)
-    yield page
-    page.close()
-
-
-@pytest.fixture(scope="session")
-def fixtures_dir() -> Path:
-    """
-    Папка с тестовыми файлами.
-    """
-    return FIXTURES_DIR
-
-
-@pytest.fixture(scope="session")
-def valid_pdf(fixtures_dir: Path) -> Path:
-    return fixtures_dir / "valid.pdf"
-
-
-@pytest.fixture(scope="session")
-def valid_docx(fixtures_dir: Path) -> Path:
-    return fixtures_dir / "valid.docx"
-
-
-@pytest.fixture(scope="session")
-def large_pdf(fixtures_dir: Path) -> Path:
-    return fixtures_dir / "large.pdf"
-
-
-@pytest.fixture(scope="session")
-def invalid_file(fixtures_dir: Path) -> Path:
-    return fixtures_dir / "virus.exe"
+@pytest.fixture(scope="function")
+def create_test_file():
+    """Фикстура для автоматического создания и очистки тестового файла"""
+    file_name = "лекция_1.pdf"
+    file_path = os.path.abspath(file_name)
+    
+    # Создаем файл с контентом, который точно есть в моках фронтенда
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write("Архитектура на основе микросервисов позволяет масштабировать систему...")
+        
+    yield file_path
+    
+    # Гарантированная очистка диска после завершения теста
+    if os.path.exists(file_path):
+        os.remove(file_path)
