@@ -53,6 +53,17 @@ services:
     elasticsearch:
       condition: service_started
 
+ front:
+  build: ./frontend
+  container_name: front
+  platform: linux/amd64
+  ports:
+    - "3000:80"
+  networks:
+    - frontend
+  depends_on:
+    - app
+
 volumes:
  postgres_data:
  elastic_data:
