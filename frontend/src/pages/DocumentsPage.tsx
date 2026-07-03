@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FiSearch, FiFileText, FiClock, FiX, FiTrash2 } from 'react-icons/fi';
 import Navigation from '../components/Navigation';
 import { mockDocuments, mockSearchResults } from '../data/mockData';
-import type { SearchResult } from '../types'; // Document не используется
 import './DocumentsPage.css';
 
 const DocumentsPage: React.FC = () => {
@@ -12,9 +11,9 @@ const DocumentsPage: React.FC = () => {
   const [showHistory, setShowHistory] = useState(false);
   const itemsPerPage = 5;
 
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchResults, setSearchResults] = useState<typeof mockSearchResults>([]);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-
+  
   const searchInputRef = useRef<HTMLInputElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
 
@@ -22,7 +21,7 @@ const DocumentsPage: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        historyRef.current &&
+        historyRef.current && 
         !historyRef.current.contains(event.target as Node) &&
         searchInputRef.current &&
         !searchInputRef.current.contains(event.target as Node)
@@ -35,7 +34,6 @@ const DocumentsPage: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Поиск по мокам (заменить на реальный API позже)
   const performSearch = (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
@@ -43,7 +41,7 @@ const DocumentsPage: React.FC = () => {
     }
     const filtered = mockSearchResults.filter(
       (item) =>
-        item.file_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.fileName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.text.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setSearchResults(filtered);
@@ -52,10 +50,10 @@ const DocumentsPage: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-
+    
     addToHistory(query);
     setShowHistory(false);
-
+    
     setIsSearching(true);
     setTimeout(() => {
       performSearch(query);
@@ -75,7 +73,7 @@ const DocumentsPage: React.FC = () => {
     setQuery(historyQuery);
     addToHistory(historyQuery);
     setShowHistory(false);
-
+    
     setIsSearching(true);
     setTimeout(() => {
       performSearch(historyQuery);
@@ -93,7 +91,6 @@ const DocumentsPage: React.FC = () => {
     setSearchHistory((prev) => prev.filter((item) => item !== historyQuery));
   };
 
-  // Подсветка совпадений
   const highlightText = (text: string, search: string) => {
     if (!search.trim()) return text;
     const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -107,13 +104,11 @@ const DocumentsPage: React.FC = () => {
     );
   };
 
-  // ---- Пагинация ----
-  // Для списка документов (без поиска)
+  // ---- ПАГИНАЦИЯ ----
   const totalDocPages = Math.ceil(mockDocuments.length / itemsPerPage);
   const startDoc = (currentPage - 1) * itemsPerPage;
   const paginatedDocs = mockDocuments.slice(startDoc, startDoc + itemsPerPage);
 
-  // Для результатов поиска
   const totalSearchPages = Math.ceil(searchResults.length / itemsPerPage);
   const startSearch = (currentPage - 1) * itemsPerPage;
   const paginatedSearch = searchResults.slice(startSearch, startSearch + itemsPerPage);
@@ -125,17 +120,6 @@ const DocumentsPage: React.FC = () => {
   const goToPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
-  };
-
-  // Форматирование даты с временем
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('ru-RU', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   return (
@@ -220,6 +204,7 @@ const DocumentsPage: React.FC = () => {
               </div>
             )}
 
+            {/* Подсказка когда история пуста */}
             {showHistory && searchHistory.length === 0 && (
               <div className="search-history-dropdown empty">
                 <div className="history-empty-state">
@@ -245,16 +230,16 @@ const DocumentsPage: React.FC = () => {
                 <span className="results-query">по запросу «{query}»</span>
               </div>
               {paginatedSearch.map((result) => (
-                <div key={result.chunk_id} className="result-card">
+                <div key={result.id} className="result-card">
                   <div className="result-card-header">
                     <FiFileText className="result-file-icon" />
                     <h3 className="result-file-name">
-                      {highlightText(result.file_name, query)}
+                      {highlightText(result.fileName, query)}
                     </h3>
                     <span className="result-score">релевантность {result.score.toFixed(2)}</span>
                   </div>
                   <p className="result-meta">
-                    Страница {result.page} • {result.file_name}
+                    Страница {result.page} • {result.fileName}
                   </p>
                   <p className="result-text">{highlightText(result.text, query)}</p>
                 </div>
@@ -274,15 +259,15 @@ const DocumentsPage: React.FC = () => {
             <div className="documents-list">
               <div className="documents-grid">
                 {paginatedDocs.map((doc) => (
-                  <div key={doc.document_id} className="doc-item">
+                  <div key={doc.id} className="doc-item">
                     <div className="doc-icon-wrapper">
                       <FiFileText className="doc-icon" />
                     </div>
                     <div className="doc-info">
-                      <span className="doc-name">{doc.file_name}</span>
+                      <span className="doc-name">{doc.name}</span>
                       <span className="doc-date">
                         <FiClock className="doc-date-icon" />
-                        {formatDate(doc.upload_date)}
+                        {doc.date}
                       </span>
                     </div>
                     <span className={`doc-status ${doc.status === 'Готово' ? 'ready' : 'error'}`}>

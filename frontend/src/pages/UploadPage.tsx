@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import DropZone from '../components/DropZone';
 import FileList from '../components/FileList';
-import { uploadDocument } from '../services/api';
 import './UploadPage.css';
 
 interface UploadFile {
@@ -16,53 +15,37 @@ interface UploadFile {
 const UploadPage: React.FC = () => {
   const navigate = useNavigate();
   const [files, setFiles] = useState<UploadFile[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
 
-  const handleFilesAdded = async (newFiles: File[]) => {
-    // Создаём записи для каждого файла со статусом "loading"
+  const handleFilesAdded = (newFiles: File[]) => {
     const newFileItems: UploadFile[] = newFiles.map((file, index) => ({
       id: Date.now() + index,
       name: file.name,
-      status: 'loading',
+      status: 'loading' as const,
       progress: 0,
     }));
+    
+    setFiles(prev => [...prev, ...newFileItems]);
 
-    setFiles((prev) => [...prev, ...newFileItems]);
-    setIsUploading(true);
-
-    // Загружаем каждый файл последовательно
-    for (let i = 0; i < newFiles.length; i++) {
-      const file = newFiles[i];
-      const fileItem = newFileItems[i];
-
-      try {
-        // Отправляем файл на сервер
-        const result = await uploadDocument(file);
-
-        // Обновляем статус на "ready"
-        setFiles((prev) =>
-          prev.map((f) =>
-            f.id === fileItem.id
-              ? { ...f, status: 'ready', progress: 100 }
-              : f
-          )
-        );
-        console.log('Файл загружен:', result);
-      } catch (error) {
-        console.error('Ошибка загрузки:', error);
-        setFiles((prev) =>
-          prev.map((f) =>
-            f.id === fileItem.id ? { ...f, status: 'error' } : f
-          )
-        );
-      }
-    }
-
-    setIsUploading(false);
+    newFileItems.forEach((fileItem) => {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        if (progress >= 100) {
+          clearInterval(interval);
+          setFiles(prev => prev.map(f =>
+            f.id === fileItem.id ? { ...f, status: 'ready' as const, progress: 100 } : f
+          ));
+        } else {
+          setFiles(prev => prev.map(f =>
+            f.id === fileItem.id ? { ...f, progress } : f
+          ));
+        }
+      }, 300);
+    });
   };
 
   const handleRemoveFile = (id: number) => {
-    setFiles((prev) => prev.filter((f) => f.id !== id));
+    setFiles(prev => prev.filter(f => f.id !== id));
   };
 
   return (
@@ -70,21 +53,28 @@ const UploadPage: React.FC = () => {
       <Navigation />
       <main className="upload-page">
         <div className="container upload-container">
+          {/* ЗАГОЛОВОК — с отступом сверху */}
           <h1 className="upload-title">ЗАГРУЗКА ДОКУМЕНТОВ</h1>
+          
+          {/* DROP ZONE — фиксированного размера */}
           <div className="dropzone-wrapper">
             <DropZone onFilesAdded={handleFilesAdded} />
           </div>
+          
+          {/* СПИСОК ФАЙЛОВ */}
           <FileList files={files} onRemoveFile={handleRemoveFile} />
+          
+          {/* КНОПКА "ГОТОВО" — центрирована */}
           <div className="ready-wrapper">
             <button
               className="btn-secondary ready-btn"
               onClick={() => navigate('/documents')}
-              disabled={isUploading}
             >
-              {isUploading ? 'ЗАГРУЗКА...' : 'ГОТОВО'}
+              ГОТОВО
             </button>
           </div>
         </div>
+        
         <footer className="footer">
           <div className="container">
             <p>© 2026 Университетская поисковая система.</p>
